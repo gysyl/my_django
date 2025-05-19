@@ -31,3 +31,29 @@ def add_book(request):
         return HttpResponse("图书添加成功！")
     return render(request, "bookstore/add_book.html")
 
+def show_all_books(request):
+    books = models.Book.objects.all()
+    #for book in books:
+    #    print(book)
+    #return HttpResponse("图书列表：<br>" + "<br>".join([str(book) for book in books]))
+    return render(request, "bookstore/list.html", {"books": books})
+def delete_book(request, book_id):
+    try:
+        book = models.Book.objects.get(id=book_id)
+        book.delete()
+    except Exception as e:
+        print("删除图书失败：", e)
+        return HttpResponse("图书删除失败！")
+    return HttpResponse("图书删除成功！")
+def edit_book(request, book_id):
+    try:
+        book = models.Book.objects.get(id=book_id)
+        book.title = "Python"
+        book.save()
+    except Exception as e:
+        print("更新图书失败：", e)
+        return HttpResponse("图书更新失败！")
+    return HttpResponse("图书更新成功！")
+
+
+
