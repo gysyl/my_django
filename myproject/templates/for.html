@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模板标签For</title>
+</head>
+<body>
+    <div>
+        <h1>过滤器演示<h1>
+        s = {{ s }}<br>    
+        s|upper = {{ s|upper }}
+        s|lower = {{ s|lower }}
+        s|title = {{ s|title }}
+        s|capfirst = {{ s|capfirst }}
+        s|length = {{ s|length }}<br>
+            
+    <div>
+    <h1>for标签演示</h1>
+    <ul>
+        {% for city in lst %}
+        {% if forloop.first %}<li>-- 第一次循环 --</li>{% endif %}
+        <li>{{ forloop.counter }}.{{ city }}</li>
+        {% empty %}
+        <li>没有城市信息</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
