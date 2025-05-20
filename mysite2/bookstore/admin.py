@@ -20,7 +20,15 @@ class AuthorAdmin(admin.ModelAdmin):
     #ordering = ('-age',)
     #list_per_page = 10
 
+class WifeAdmin(admin.ModelAdmin):
+    list_display = ('id','name', 'age', 'author')
+    list_display_links = ('id', 'name')
+    search_fields = ('name',)
+    list_filter = ('age',)
+    list_editable = ('author',)
+    #ordering = ('-age',)
+    #list_per_page = 10
+
 admin.site.register(models.Book, BookAdmin)
 admin.site.register(models.Author, AuthorAdmin)
-
-
+admin.site.register(models.Wife, WifeAdmin)
