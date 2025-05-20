@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>修改图书</title>
+</head>
+<body>
+    <h1>修改图书信息</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label>书名：</label>
+        <input type="text" name="title" value="{{ book.title }}"><br>
+        <label>定价：{{ book.price }}</label><br>
+        <label>出版社：{{ book.pub_house }}</label><br>
+        <label>零售价：</label>
+        <input type="text" name="market_price" value="{{ book.market_price }}"><br>
+        <input type="submit" value="保存">
+    </form>
+    <a href="{% url 'show_all_books' %}">返回列表</a>
+</body>
+</html>

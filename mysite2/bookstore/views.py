@@ -44,16 +44,28 @@ def delete_book(request, book_id):
     except Exception as e:
         print("删除图书失败：", e)
         return HttpResponse("图书删除失败！")
+    
     return HttpResponse("图书删除成功！")
 def edit_book(request, book_id):
     try:
         book = models.Book.objects.get(id=book_id)
-        book.title = "Python"
-        book.save()
     except Exception as e:
-        print("更新图书失败：", e)
-        return HttpResponse("图书更新失败！")
-    return HttpResponse("图书更新成功！")
+        print("未找到图书：", e)
+        return HttpResponse("未找到要修改的图书！")
+
+    if request.method == "GET":
+        return render(request, "bookstore/edit_book.html", {"book": book})
+    elif request.method == "POST":
+        title = request.POST.get("title")
+        market_price = request.POST.get("market_price")
+        try:
+            book.title = title
+            book.market_price = market_price
+            book.save()
+        except Exception as e:
+            print("更新图书失败：", e)
+            return HttpResponse("图书更新失败！")
+        return HttpResponse("图书更新成功！")
 
 
 
