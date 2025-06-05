@@ -32,3 +32,4 @@ class WifeAdmin(admin.ModelAdmin):
 admin.site.register(models.Book, BookAdmin)
 admin.site.register(models.Author, AuthorAdmin)
 admin.site.register(models.Wife, WifeAdmin)
+

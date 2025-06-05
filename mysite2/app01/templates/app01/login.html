@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>login</title>
+</head>
+<body>
+    <h1>用户登陆</h1>
+    <form method="post" action="{% url 'login' %}">
+    <!-- 使用Django的URL反向解析来生成登录表单的提交地址 -->
+    <!-- 确保在表单中包含CSRF令牌以防止跨站请求伪造攻击 -->
+        {% csrf_token %}
+        <input type="text"  name="username" placeholder="用户名">
+        <br>
+        <input type="password"  name="pwd" placeholder="密码">
+        <br>
+        <input type="submit" value="登陆">
+        <span style="color:red">{{ error_msg }}</span>
+    </form>
+</body>
+</html>
