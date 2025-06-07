@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>电子书管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入Bootstrap图标（可选，增强视觉） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+    <!-- 导航栏（优化容器宽度和用户区域） -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">  <!-- 原container-fluid改为container，限制最大宽度 -->
+            <a class="navbar-brand" href="/books/">电子书管理系统</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/books/">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'category_list' %}">书籍分类</a>  <!-- 改为动态路由 -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'upload_book' %}">上传书籍</a>  <!-- 改为动态路由 -->
+                    </li>
+                </ul>
+                <!-- 用户状态区域调整间距 -->
+                <div class="d-flex align-items-center gap-2">  <!-- 添加gap-2控制按钮间距 -->
+                    {% if request.session.reader_id %}
+                        <span class="navbar-text text-white">欢迎，{{ request.session.reader_name }}</span>
+                        <a href="{% url 'books_logout' %}" class="btn btn-outline-light btn-sm">退出</a>
+                        <a href="{% url 'books_center' %}" class="btn btn-outline-info btn-sm">用户中心</a>
+                    {% else %}
+                        <a href="{% url 'books_login' %}" class="btn btn-outline-light btn-sm">登录</a>
+                        <a href="{% url 'books_register' %}" class="btn btn-outline-info btn-sm">注册</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容容器 -->
+    <div class="container">
+        <!-- 标题区 -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h1 class="mb-0">欢迎使用电子书管理系统</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- 筛选表单（新增搜索框） -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <form method="get" class="d-flex align-items-center gap-2">  <!-- 添加gap-2控制元素间距 -->
+                    <label class="me-2">书籍分类：</label>
+                    <select name="category" class="form-select w-auto" onchange="this.form.submit()">
+                        <option value="">全部</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if selected_category == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <!-- 新增搜索框 -->
+                    <input type="text" name="q" class="form-control" placeholder="搜索书名/作者" 
+                        value="{{ request.GET.q }}" aria-label="搜索">
+                    <button type="submit" class="btn btn-primary">搜索</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 书籍列表（改为卡片式布局，更适配封面展示） -->
+        <div class="row g-4">  <!-- g-4控制卡片间距 -->
+            {% if books %}
+                {% for book in books %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">  <!-- 响应式列宽：小屏1列→超小屏12列，手机6列（2列），平板4列（3列），大屏3列（4列） -->
+                    <div class="card h-100 shadow-sm">  <!-- 添加shadow-sm提升卡片层次感 -->
+                        <!-- 封面（统一高度+图片裁剪） -->
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 220px;">
+                            {% if book.cover %}
+                                <img src="{{ book.cover.url }}" alt="{{ book.title }} 封面" 
+                                    class="img-fluid" style="max-height: 200px; object-fit: contain;">  <!-- 图片居中+等比缩放 -->
+                            {% else %}
+                                <i class="bi bi-book fs-1 text-muted"></i>
+                                <div class="text-muted small">无封面</div>
+                            {% endif %}
+                        </div>
+                        <!-- 书籍信息（限制行数防溢出） -->
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate">{{ book.title }}</h5>  <!-- 标题单行截断 -->
+                            <p class="card-text">
+                                <span class="text-muted">作者：</span>{{ book.author|default:"未知" }}<br>
+                                <span class="text-muted">分类：</span>{{ book.category.name|default:"未分类" }}<br>
+                                <span class="text-muted">简介：</span>
+                                <span class="text-truncate" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                    {{ book.description|default:"暂无简介" }}
+                                </span>
+                            </p>
+                        </div>
+                        <!-- 底部操作 -->
+                        <div class="card-footer bg-transparent">
+                            <a href="{% url 'book_detail' book.id %}" class="btn btn-sm btn-outline-primary">查看详情</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- 空状态优化（图标+文字） -->
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-bookmarks fs-1 text-muted mb-3"></i>
+                    <h3 class="text-muted">暂无书籍</h3>
+                    <p class="text-secondary">快来上传你的第一本电子书吧！</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 页脚（优化内容宽度和信息） -->
+    <footer class="footer mt-5 py-3 bg-light border-top">
+        <div class="container text-center">
+            <span class="text-muted">&copy; 2025 电子书管理系统 · 版权所有</span>
+            <span class="ms-3 text-muted">联系我们：admin@example.com</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

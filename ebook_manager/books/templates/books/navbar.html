@@ -1,0 +1,32 @@
+<!-- 导航栏（优化容器宽度和用户区域） -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="/books/">电子书管理系统</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/books/">首页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'category_list' %}">书籍分类</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'upload_book' %}">上传书籍</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center gap-2">
+                {% if request.session.reader_id %}
+                    <span class="navbar-text text-white">欢迎，{{ request.session.reader_name }}</span>
+                    <a href="{% url 'books_logout' %}" class="btn btn-outline-light btn-sm">退出</a>
+                    <a href="{% url 'books_center' %}" class="btn btn-outline-info btn-sm">用户中心</a>
+                {% else %}
+                    <a href="{% url 'books_login' %}" class="btn btn-outline-light btn-sm">登录</a>
+                    <a href="{% url 'books_register' %}" class="btn btn-outline-info btn-sm">注册</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>

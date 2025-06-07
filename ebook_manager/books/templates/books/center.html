@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>用户中心 - 电子书管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/books/">电子书管理系统</a>
+        <div class="d-flex ms-auto">
+            <span class="navbar-text text-white me-3">欢迎，{{ request.session.reader_name }}</span>
+            <a href="{% url 'books_logout' %}" class="btn btn-outline-light btn-sm me-2">退出</a>
+            <a href="{% url 'books_index' %}" class="btn btn-outline-info btn-sm">首页</a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">用户中心</h2>
+                    <p>用户名：{{ request.session.reader_name }}</p>
+                    <p>这里可以扩展：我的上传、我的下载、修改密码等功能。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
